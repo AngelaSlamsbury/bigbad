@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Releases — Big Bad Records</title>
+<meta name="description" content="Albums and singles from Big Bad Records." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="theme-dark">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header wrap">
+<a class="logo" href="index.html">Big Bad Records</a>
+<button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">☰</button>
+<nav id="site-nav" class="site-nav" aria-label="Primary">
+<ul>
+<li><a href="artists.html">Artists</a></li>
+<li><a href="releases.html" aria-current="page">Releases</a></li>
+<li><a href="shop.html">Shop</a></li>
+<li><a href="index.html#contact">Contact</a></li>
+</ul>
+</nav>
+</header>
+
+
+<main id="main" class="wrap">
+<section class="page-intro" data-reveal>
+<h1 class="display">Releases</h1>
+<p class="lede">Browse the catalog. Filter by format and year, or search by title.</p>
+<div class="toolbar">
+<label class="sr-only" for="rq">Search releases</label>
+<input id="rq" class="input" type="search" placeholder="Search titles…" autocomplete="off" />
+<div class="filters">
+<label class="sr-only" for="rformat">Format</label>
+<select id="rformat" class="input select-sm">
+<option value="all">All formats</option>
+<option value="lp">LP</option>
+<option value="ep">EP</option>
+<option value="single">Single</option>
+<option value="cassette">Cassette</option>
+</select>
+<label class="sr-only" for="ryear">Year</label>
+<select id="ryear" class="input select-sm">
+<option value="all">All years</option>
+<option value="2025">2025</option>
+<option value="2024">2024</option>
+<option value="2023">2023</option>
+</select>
+</div>
+</div>
+</section>
+
+
+<section data-reveal>
+<ul id="releaseGrid" class="cover-grid">
+<li class="release"><a class="cover-link" href="#" data-title="Night Lines" data-format="lp" data-year="2025"><img src="assets/cover-1.jpg" alt="Night Lines — Mesa Verde" loading="lazy"><div class="cover-meta"><h3>Night Lines</h3><p class="muted">Mesa Verde · LP · 2025</p></div></a></li>
+<li class="release"><a class="cover-link" href="#" data-title="Dust & Echoes" data-format="ep" data-year="2024"><img src="assets/cover-2.jpg" alt="Dust &amp; Echoes — Plains Drifter" loading="lazy"><div class="cover-meta"><h3>Dust &amp; Echoes</h3><p class="muted">Plains Drifter · EP · 2024</p></div></a></li>
+<li class="release"><a class="cover-link" href="#" data-title="Violet Hour" data-format="lp" data-year="2023"><img src="assets/cover-3.jpg" alt="Violet Hour — Violet Static" loading="lazy"><div class="cover-meta"><h3>Violet Hour</h3><p class="muted">Violet Static · LP · 2023</p></div></a></li>
+<li class="release"><a class="cover-link" href="#" data-title="Night Lines (Single)" data-format="single" data-year="2025"><img src="assets/cover-1.jpg" alt="Night Lines (Single) — Mesa Verde" loading="lazy"><div class="cover-meta"><h3>Night Lines (Single)</h3><p class="muted">Mesa Verde · Single · 2025</p></div></a></li>
+</ul>
+<p id="releaseEmpty" class="muted" hidden>No releases match your filters.</p>
+</section>
+</main>
+
+
+<footer class="site-footer wrap"><p>© <span id="year"></span> Big Bad Records</p></footer>
+<script src="script.js"></script>
+</body>
+</html>

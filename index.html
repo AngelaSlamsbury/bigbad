@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Big Bad Distribution — Home</title>
+  <meta name="description" content="Big Bad Distribution — community, catharsis, connection. Artists, releases, and merch." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="theme-dark">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- MASTHEAD with animated art layer -->
+  <section class="masthead" data-reveal>
+    <!-- NEW: smaller hands that pan slowly to the right -->
+    <div class="masthead-art" aria-hidden="true">
+      <img src="assets/bigbadheader.png" alt="">
+    </div>
+
+    <header class="site-header header--overlay wrap">
+      <a class="logo" href="index.html" aria-label="Big Bad Distribution — Home">
+        <img src="assets/bigbadlogo.png" alt="Big Bad Distribution logo">
+      </a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">☰</button>
+      <nav id="site-nav" class="site-nav" aria-label="Primary">
+        <ul>
+          <li><a href="artists.html">Artists</a></li>
+          <li><a href="releases.html">Releases</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- HERO inside masthead -->
+    <div class="hero wrap">
+      <!-- Marquee -->
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          BIG BAD DISTRO • COMMUNITY • CATHARSIS • CONNECTION • BIG BAD DISTRO • COMMUNITY • CATHARSIS • CONNECTION • BIG BAD DISTRO • COMMUNITY • CATHARSIS • CONNECTION • BIG BAD DISTRO • COMMUNITY • CATHARSIS • CONNECTION • BIG BAD DISTRO • COMMUNITY • CATHARSIS • CONNECTION • BIG BAD DISTRO • COMMUNITY • CATHARSIS • CONNECTION • BIG BAD DISTRO • COMMUNITY • CATHARSIS • CONNECTION • BIG BAD DISTRO • COMMUNITY • CATHARSIS • CONNECTION •
+        </div>
+      </div>
+
+      <h1 class="display">COMMUNITY. CATHARSIS. CONNECTION.</h1>
+      <p class="lede">Independent label from the High Plains. Unapologetically DIY. Loudness rules.</p>
+      <p class="cta-row">
+        <a class="btn" href="releases.html">Explore releases</a>
+        <a class="link" href="artists.html">Meet the roster →</a>
+      </p>
+    </div>
+  </section>
+
+  <main id="main">
+    <!-- UPCOMING RELEASE (moved above Featured Releases) -->
+    <section class="wrap upcoming" data-reveal>
+      <h2 class="section-title">Upcoming Release</h2>
+      <article class="release-feature">
+        <div class="release-art">
+          <img src="assets/nothinglastscover.jpg" alt="Upcoming album cover: the nothing lasts - Wabi Sabi" loading="lazy">
+        </div>
+        <div class="release-info">
+          <h3>Wabi Sabi</h3>
+          <p class="muted">the nothing lasts · LP · Coming January 2026</p>
+          <p>Fast, loud, and a little bit shreddy and technical. the nothing lasts is too heavy to be indie and too catchy to be hardcore. Limited cassettes available.</p>
+          <p class="cta-row">
+            <a class="btn" href="#">Pre-order soon</a>
+            <a class="link" href="releases.html">See catalog →</a>
+          </p>
+        </div>
+      </article>
+    </section>
+
+    <!-- FEATURED RELEASES -->
+    <section class="wrap" data-reveal>
+      <h2 class="section-title">Featured Releases</h2>
+      <ul class="cover-grid">
+        <li class="cover">
+          <a class="cover-link" href="#">
+            <img src="assets/mummer.jpg" alt="Mummer — Tongue In Cheek" loading="lazy">
+            <div class="cover-meta">
+              <h3>Mummer</h3>
+              <p class="muted">Tongue In Cheek · EP</p>
+            </div>
+          </a>
+        </li>
+        <li class="cover">
+          <a class="cover-link" href="#">
+            <img src="assets/emergence.jpg" alt="The Planting Noise — Emergence" loading="lazy">
+            <div class="cover-meta">
+              <h3>The Planting Noise</h3>
+              <p class="muted">Emergence · EP</p>
+            </div>
+          </a>
+        </li>
+        <li class="cover">
+          <a class="cover-link" href="#">
+            <img src="assets/hetchetchy.jpg" alt="Hetchetchy — Give Up the Ghost" loading="lazy">
+            <div class="cover-meta">
+              <h3>Hetchetchy</h3>
+              <p class="muted">Give Up the Ghost · EP</p>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="wrap contact" data-reveal>
+      <h2 class="section-title">Contact</h2>
+      <p>General inquiries: <a href="mailto:info@bigbadrecords.com">info@bigbadrecords.com</a></p>
+      <p class="socials"><a href="#">Instagram</a> · <a href="#">Bandcamp</a> · <a href="#">YouTube</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>© <span id="year"></span> Big Bad Records · Lubbock, Texas</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
