@@ -1,4 +1,4 @@
-# Big Bad Records — Static Site (Clean Starter)
+# Big Bad Records v.1
 
 
 A complete, dark-themed static site for Big Bad Records. Inspired by Bandcamp artist grids and Holy Mountain merch walls, with tasteful motion accents.
