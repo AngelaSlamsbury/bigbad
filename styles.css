@@ -187,3 +187,50 @@ img{ max-width:100%; height:auto; display:block; border-radius:var(--radius-sm);
   transform-origin: 50% 50%;
   will-change: transform;
 }
+/* Zine Mode toggle button (compact) */
+.zine-toggle{
+  margin-left: .5rem;
+  padding: .4rem .7rem;
+  border-radius: 999px;
+  border: 1px solid #2a2a30;
+  background:#141418;
+  color:#fff;
+  font-weight:700;
+  letter-spacing:.02em;
+  cursor:pointer;
+}
+.zine-toggle[aria-pressed="true"]{
+  background: var(--fg);
+  color:#000;
+  border-color:#fff3;
+}
+
+/* Zine Mode: global grain overlay (OFF by default) */
+:root{
+  --grain-opacity: 0.25; /* tune 0.08–0.22 */
+}
+body.zine-mode::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: url("assets/designelements/grain.png") repeat;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: multiply;
+  z-index: 9999;
+  animation: grain-move 2s steps(2) infinite;
+}
+
+/* Slight jitter so the grain feels alive */
+@keyframes grain-move {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-1px, 1px); }
+  50%  { transform: translate(1px, -1px); }
+  75%  { transform: translate(-1px, -1px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Respect reduced motion — keep the overlay but stop jitter */
+@media (prefers-reduced-motion: reduce){
+  body.zine-mode::after{ animation: none; }
+}

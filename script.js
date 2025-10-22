@@ -85,3 +85,23 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.hidden) { hovering = false; toNeutral(); if (!raf) raf = requestAnimationFrame(render); }
   });
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("zine-toggle");
+  if (!btn) return;
+
+  const apply = (on) => {
+    document.body.classList.toggle("zine-mode", on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.textContent = on ? "✶ Zine Mode: ON" : "✶ Zine Mode";
+  };
+
+  // Load saved preference (defaults to OFF)
+  const saved = localStorage.getItem("zineMode") === "true";
+  apply(saved);
+
+  btn.addEventListener("click", () => {
+    const next = !document.body.classList.contains("zine-mode");
+    apply(next);
+    localStorage.setItem("zineMode", String(next));
+  });
+});
