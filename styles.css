@@ -165,6 +165,80 @@ img{ max-width:100%; height:auto; display:block; border-radius:var(--radius-sm);
 .product-link:hover,.cover-link:hover{ border-color:#3a3a42; }
 .more{ margin-top:var(--space-4); }
 
+/* ---------- Featured Releases: slide-up overlay cards ---------- */
+.cover-link{
+  position: relative;           /* make it a positioning context */
+  overflow: hidden;             /* hide overlay while it’s offscreen */
+  isolation: isolate;           /* keep overlay stacking clean */
+}
+
+.cover-link img{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio: 1 / 1;          /* consistent squares; remove if you prefer natural */
+  object-fit: cover;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* The overlay that slides up */
+.cover-meta{
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: var(--space-4);
+  color: #fff;
+  /* gradient that gets denser toward the bottom */
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0) 0%,
+    rgba(0,0,0,.35) 20%,
+    rgba(0,0,0,.85) 100%
+  );
+  transform: translateY(100%);        /* hidden below the card */
+  transition: transform .35s ease;    /* slide duration */
+  z-index: 1;
+}
+
+/* Titles inside the overlay */
+.cover-meta h3{
+  margin: 0 0 .35rem 0;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  font-weight: 800;
+}
+.cover-meta .muted{
+  margin: 0 0 .5rem 0;
+  color: #e5e7eb;        /* lighter on dark gradient */
+  opacity: .9;
+}
+.cover-meta .blurb{
+  margin: 0;
+  font-size: .9rem;
+  line-height: 1.4;
+  opacity: .95;
+}
+
+/* Reveal on hover AND keyboard focus */
+.cover-link:hover .cover-meta,
+.cover-link:focus .cover-meta,
+.cover-link:focus-visible .cover-meta{
+  transform: translateY(0);
+}
+
+/* slightly lift the whole card on hover */
+.cover-link:hover{ transform: translateY(-2px); transition: transform .2s ease; }
+
+/* Respect reduce-motion settings */
+@media (prefers-reduced-motion: reduce){
+  .cover-meta{ transition: none; transform: translateY(0); }
+}
+
+/* On touch devices (no hover), show the text by default */
+@media (hover: none){
+  .cover-meta{ transform: translateY(0); }
+}
+
 /* Cards */
 .card-grid{ list-style:none; margin:0; padding:0; display:grid; gap:var(--space-8);
   grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); }
