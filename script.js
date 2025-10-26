@@ -1,107 +1,95 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const masthead = document.querySelector(".masthead");
-  const art = document.querySelector(".masthead-art img");
-  if (!masthead || !art) return;
+// Masthead: continuous slow pan (via CSS) + hover wiggle (via JS vars)
+(function () {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 
-  // ----- Tuning knobs -----
-  const RANGE_X = 6;          // max horizontal translate in %
-  const RANGE_Y = 3;          // max vertical translate in %
-  const ROT_MAX = 2;          // max rotation in deg
-  const DAMPING = 0.14;       // 0.08 = softer, 0.2 = snappier
-  const RETURN_DAMPING = 0.10;// easing when leaving
+  function init() {
+    var masthead = document.querySelector(".masthead");
+    var img = document.querySelector(".masthead-art img");
+    if (!masthead || !img) return;
 
-  // State
-  let raf = null;
-  let hovering = false;
+    // Hover tuning
+    var RANGE_X = 6;          // % translate
+    var RANGE_Y = 3;          // % translate
+    var ROT_MAX = 2;          // deg
+    var DAMPING = 0.14;
+    var RETURN_DAMPING = 0.10;
 
-  // Current transform values (what we render)
-  let cx = 0, cy = 0, cr = 0; // %
-  // Targets (where we want to go)
-  let tx = 0, ty = 0, tr = 0;
+    var raf = null;
+    var hovering = false;
 
-  // Helpers
-  const toNeutral = () => { tx = 0; ty = 0; tr = 0; };
-  const stopRaf = () => { if (raf) cancelAnimationFrame(raf); raf = null; };
+    var cx = 0, cy = 0, cr = 0;   // current
+    var tx = 0, ty = 0, tr = 0;   // target
 
-  const render = () => {
-    // Ease current toward target
-    const k = hovering ? DAMPING : RETURN_DAMPING;
-    cx += (tx - cx) * k;
-    cy += (ty - cy) * k;
-    cr += (tr - cr) * k;
+    // Ensure the image is sized to allow panning (defensive)
+    img.style.height = "100%";
+    img.style.width = "auto";
+    if (!img.style.minWidth) img.style.minWidth = "130%"; // gives room on both sides
+    img.style.maxWidth = "none";
+    img.style.objectFit = "contain";
+    img.style.transformOrigin = "50% 50%";
+    img.style.borderRadius = "0";
 
-    art.style.transform =
-      `translateX(${cx}%) translateY(${cy}%) rotate(${cr}deg) scale(var(--art-scale))`;
+    // Initialize CSS vars used by the CSS transform
+    img.style.setProperty("--hover-x", "0%");
+    img.style.setProperty("--hover-y", "0%");
+    img.style.setProperty("--hover-r", "0deg");
 
-    // Keep going if we’re still moving or hovering
-    if (hovering || Math.abs(cx) > 0.02 || Math.abs(cy) > 0.02 || Math.abs(cr) > 0.02) {
-      raf = requestAnimationFrame(render);
-    } else {
-      // fully settled → resume slow pan
-      art.style.animation = "pan-right var(--pan-duration, 80s) linear infinite alternate";
-      raf = null;
+    function toNeutral(){ tx = 0; ty = 0; tr = 0; }
+
+    function render(){
+      var k = hovering ? DAMPING : RETURN_DAMPING;
+      cx += (tx - cx) * k;
+      cy += (ty - cy) * k;
+      cr += (tr - cr) * k;
+
+      img.style.setProperty("--hover-x", cx.toFixed(3) + "%");
+      img.style.setProperty("--hover-y", cy.toFixed(3) + "%");
+      img.style.setProperty("--hover-r", cr.toFixed(3) + "deg");
+
+      if (hovering || Math.abs(cx) > 0.02 || Math.abs(cy) > 0.02 || Math.abs(cr) > 0.02) {
+        raf = requestAnimationFrame(render);
+      } else {
+        img.style.setProperty("--hover-x", "0%");
+        img.style.setProperty("--hover-y", "0%");
+        img.style.setProperty("--hover-r", "0deg");
+        raf = null;
+      }
     }
-  };
 
-  const onEnter = () => {
-    hovering = true;
-    // Pause the slow pan immediately
-    art.style.animation = "none";
-    // Kick RAF if not running
-    if (!raf) raf = requestAnimationFrame(render);
-  };
+    function onEnter(){
+      hovering = true;
+      if (!raf) raf = requestAnimationFrame(render);
+    }
 
-  const onMove = (e) => {
-    if (!hovering) return;
-    const rect = masthead.getBoundingClientRect();
-    const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;  // -1..1
-    const ny = ((e.clientY - rect.top)  / rect.height) * 2 - 1; // -1..1 (top= -1)
+    function onMove(e){
+      if (!hovering) return;
+      var r = masthead.getBoundingClientRect();
+      var nx = ((e.clientX - r.left) / r.width) * 2 - 1;  // -1..1
+      var ny = ((e.clientY - r.top)  / r.height) * 2 - 1; // -1..1
+      tx = nx * RANGE_X;
+      ty = -ny * RANGE_Y * 0.7;
+      tr = nx * ROT_MAX;
+      if (!raf) raf = requestAnimationFrame(render);
+    }
 
-    // Set targets from mouse (invert Y so up is negative movement)
-    tx = nx * RANGE_X;         // horizontal parallax
-    ty = -ny * RANGE_Y * 0.7;  // subtle vertical lift
-    tr = nx * ROT_MAX;         // slight tilt
+    function onLeave(){
+      hovering = false;
+      toNeutral();
+      if (!raf) raf = requestAnimationFrame(render);
+    }
 
-    // Start RAF if it somehow stopped
-    if (!raf) raf = requestAnimationFrame(render);
-  };
+    masthead.addEventListener("mouseenter", onEnter);
+    masthead.addEventListener("mousemove", onMove);
+    masthead.addEventListener("mouseleave", onLeave);
 
-  const onLeave = () => {
-    hovering = false;
-    // Drift back to neutral; RAF keeps running until settled,
-    // then render() resumes the slow pan
-    toNeutral();
-    if (!raf) raf = requestAnimationFrame(render);
-  };
-
-  // Use the whole masthead as the hover area (more reliable than the image)
-  masthead.addEventListener("mouseenter", onEnter);
-  masthead.addEventListener("mousemove", onMove);
-  masthead.addEventListener("mouseleave", onLeave);
-
-  // Safety: resume pan if page loses focus
-  window.addEventListener("blur", () => { hovering = false; toNeutral(); if (!raf) raf = requestAnimationFrame(render); });
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) { hovering = false; toNeutral(); if (!raf) raf = requestAnimationFrame(render); }
-  });
-});
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("zine-toggle");
-  if (!btn) return;
-
-  const apply = (on) => {
-    document.body.classList.toggle("zine-mode", on);
-    btn.setAttribute("aria-pressed", on ? "true" : "false");
-    btn.textContent = on ? "✶ Zine Mode: ON" : "✶ Zine Mode";
-  };
-
-  // Load saved preference (defaults to OFF)
-  const saved = localStorage.getItem("zineMode") === "true";
-  apply(saved);
-
-  btn.addEventListener("click", () => {
-    const next = !document.body.classList.contains("zine-mode");
-    apply(next);
-    localStorage.setItem("zineMode", String(next));
-  });
-});
+    window.addEventListener("blur", onLeave);
+    document.addEventListener("visibilitychange", function(){
+      if (document.hidden) onLeave();
+    });
+    window.addEventListener("resize", onLeave);
+  }
+})();

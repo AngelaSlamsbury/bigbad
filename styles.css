@@ -1,11 +1,16 @@
+/* =========================================================
+   BIGBAD — base theme with centered slow-pan masthead
+   ========================================================= */
+
 :root{
-  --bg:#0b0b0c; --bg-elev:#131316; --fg:#f5f5f6; --muted:#9aa0a6; --accent:#e11d48; /* rose-600 */
+  --bg:#0b0b0c; --bg-elev:#131316; --fg:#f5f5f6; --muted:#9aa0a6; --accent:#e11d48;
   --space-2:.5rem; --space-4:1rem; --space-6:1.5rem; --space-8:2rem; --space-12:3rem; --space-16:4rem;
   --radius:12px; --radius-sm:8px; --max:80rem;
 
   /* Masthead art controls */
-  --art-scale: 1.0;          /* adjust: 0.8 smaller, 1.0 full */
-  --pan-duration: 20s;       /* slower = bigger number */
+  --art-scale: 1.05;            /* small zoom, no crop */
+  --pan-duration: 20s;          /* slower = bigger number */
+  --pan-phase: 0.5;             /* 0 = left, 0.5 = center, 1 = right (start point) */
 }
 
 *{ box-sizing:border-box; }
@@ -32,8 +37,8 @@ img{ max-width:100%; height:auto; display:block; border-radius:var(--radius-sm);
   backdrop-filter:blur(8px); z-index:10;
 }
 .logo{ display:inline-flex; align-items:center; gap:.5rem; text-decoration:none; color:inherit; }
-.logo img{ display:block; height:45px; width:auto; }
-@media (min-width:768px){ .logo img{ height:45px; } }
+.logo img{ display:block; height:28px; width:auto; }
+@media (min-width:768px){ .logo img{ height:32px; } }
 .menu-toggle{ margin-left:auto; display:inline-flex; align-items:center; gap:.5rem; padding:.5rem .75rem;
   border:1px solid #303038; background:#141418; color:#fff; border-radius:8px; }
 .site-nav{ display:none; }
@@ -62,22 +67,51 @@ img{ max-width:100%; height:auto; display:block; border-radius:var(--radius-sm);
 .header--overlay .site-nav a{ color:#f0f0f0; }
 .header--overlay .site-nav a[aria-current="page"]{ color:var(--accent); }
 
-/* Hands artwork full + slow pan */
-.masthead-art{ position:absolute; inset:0; z-index:-2; overflow:hidden; }
+/* Container still clips the art edges */
+.masthead-art{
+  position:absolute; inset:0; z-index:-2; overflow:hidden;
+}
+
+/* Image: full height, extra width so there's room to pan both sides */
 .masthead-art img{
-  position:absolute; inset:0;
-  width:115%; height:100%;
-  object-fit:cover; object-position:center;
-  transform: translateX(-3%) scale(var(--art-scale));
-  transform-origin: 50% 50%;        /* ✅ smoother rotations/scales */
-  animation: pan-right var(--pan-duration) linear infinite alternate;
+  height:100%;
+  width:auto;
+  min-width:130%;        /* ensures offscreen buffer left & right */
+  max-width:none;
+  object-fit:contain;    /* never crop */
+  border-radius:0 !important;
+
+  /* Compose slow pan + hover offsets via CSS variables */
+  --pan-x: 0%;
+  --hover-x: 0%;
+  --hover-y: 0%;
+  --hover-r: 0deg;
+
+  transform:
+    translateX(var(--pan-x))
+    translateX(var(--hover-x))
+    translateY(var(--hover-y))
+    rotate(var(--hover-r))
+    scale(var(--art-scale));
+
+  transform-origin: 50% 50%;
+  animation: pan-sway var(--pan-duration, 20s) linear infinite alternate;
+  /* Start in the middle of the cycle so travel is symmetric from the start */
+  animation-delay: calc(var(--pan-duration, 20s) * -0.5);
   will-change: transform;
 }
-@keyframes pan-right{
-  from { transform: translateX(-3%) scale(var(--art-scale)); }
-  to   { transform: translateX(3%) scale(var(--art-scale)); }
+
+/* Wider sway so both sides get visible travel */
+@keyframes pan-sway{
+  from { transform: translateX(-6%)  translateX(var(--hover-x)) translateY(var(--hover-y)) rotate(var(--hover-r)) scale(var(--art-scale)); }
+  to   { transform: translateX( 6%)  translateX(var(--hover-x)) translateY(var(--hover-y)) rotate(var(--hover-r)) scale(var(--art-scale)); }
 }
-@media (prefers-reduced-motion: reduce){ .masthead-art img{ animation:none; } }
+
+/* If you don’t want to honor “Reduce Motion”, delete this */
+@media (prefers-reduced-motion: reduce){
+  .masthead-art img{ animation: none; }
+}
+
 
 /* Hero inside masthead */
 .masthead .hero{
@@ -173,64 +207,15 @@ img{ max-width:100%; height:auto; display:block; border-radius:var(--radius-sm);
   .release-feature{ grid-template-columns: 1fr 1.2fr; }
 }
 
-/* Wiggle animation */
+/* Wiggle animation hook (optional class if you keep using it) */
 @keyframes wiggle {
   0%   { transform: translateX(-3%) rotate(0deg) scale(1.0); }
   20%  { transform: translateX(-6%) rotate(-2deg) scale(1.05); }
-  40%  { transform: translateX(0%) rotate(2deg) scale(1.05); }
+  40%  { transform: translateX(0%)  rotate(2deg)  scale(1.05); }
   60%  { transform: translateX(-6%) rotate(-2deg) scale(0.98); }
-  80%  { transform: translateX(0%) rotate(2deg) scale(1.02); }
+  80%  { transform: translateX(0%)  rotate(2deg)  scale(1.02); }
   100% { transform: translateX(-3%) rotate(0deg) scale(1.0); }
 }
-.masthead-art img{
-  /* you already have width/height/object-fit/animation... */
-  transform-origin: 50% 50%;
-  will-change: transform;
-}
-/* Zine Mode toggle button (compact) */
-.zine-toggle{
-  margin-left: .5rem;
-  padding: .4rem .7rem;
-  border-radius: 999px;
-  border: 1px solid #2a2a30;
-  background:#141418;
-  color:#fff;
-  font-weight:700;
-  letter-spacing:.02em;
-  cursor:pointer;
-}
-.zine-toggle[aria-pressed="true"]{
-  background: var(--fg);
-  color:#000;
-  border-color:#fff3;
-}
-
-/* Zine Mode: global grain overlay (OFF by default) */
-:root{
-  --grain-opacity: 0.25; /* tune 0.08–0.22 */
-}
-body.zine-mode::after{
-  content:"";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: url("assets/designelements/grain.png") repeat;
-  opacity: var(--grain-opacity);
-  mix-blend-mode: multiply;
-  z-index: 9999;
-  animation: grain-move 2s steps(2) infinite;
-}
-
-/* Slight jitter so the grain feels alive */
-@keyframes grain-move {
-  0%   { transform: translate(0, 0); }
-  25%  { transform: translate(-1px, 1px); }
-  50%  { transform: translate(1px, -1px); }
-  75%  { transform: translate(-1px, -1px); }
-  100% { transform: translate(0, 0); }
-}
-
-/* Respect reduced motion — keep the overlay but stop jitter */
-@media (prefers-reduced-motion: reduce){
-  body.zine-mode::after{ animation: none; }
+.masthead-art .pan-layer > img.wiggle{
+  animation: wiggle var(--wiggle-speed, 1s) ease-in-out infinite;
 }
